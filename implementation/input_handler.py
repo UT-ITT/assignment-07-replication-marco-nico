@@ -78,7 +78,6 @@ class InputHandler:
         self.process_stick_selection(self.selection_square_right, config.RIGHT_KEYS)
 
     def process_stick_selection(self, selection_square, layout):
-        # TODO
         if abs(selection_square.vector.x) > 0 or abs(selection_square.vector.y) > 0:
             self.check_gestures()
             elapsed_time = time.time() - selection_square.input_start_time
@@ -113,7 +112,7 @@ class InputHandler:
     def check_gestures(self):
         if self.selection_square_left.active or self.selection_square_right.active:
             return
-
+        # TODO Implement the requiered Gestures
         perf_gesture = False
         left_up = self.selection_square_left.vector.y < -config.GESTURE_THRESHOLD
         right_up = self.selection_square_right.vector.y < -config.GESTURE_THRESHOLD
@@ -131,7 +130,9 @@ class InputHandler:
             self.selection_square_left.blocked = self.selection_square_right.blocked = True
             self.selection_square_left.active = self.selection_square_right.active = True
 
+    # A methode to check if a gesture is even possible to reduce delay
     def is_gesture_possible(self, l_vec, r_vec):
+        # TODO Implement the requiered Gestures possibilities to reduce latency
         left_up = l_vec.y < -config.DEADZONE
         right_up = r_vec.y < -config.DEADZONE
         left_left = l_vec.x < -config.DEADZONE
@@ -147,7 +148,7 @@ class InputHandler:
             if not self.window.visible:
                 return
 
-            print("TODO Add missing buttons")
+            # TODO Add missing buttons
 
             if button == 'a':
                 pyglet.app.exit()
@@ -159,6 +160,8 @@ class InputHandler:
         def on_trigger_motion(device, trigger_name, value):
             if not self.window.visible:
                 return
+
+            # TODO Implement the trigger presses and simultanious press
 
             threshold = 0.5
             if trigger_name == "lefttrigger":
