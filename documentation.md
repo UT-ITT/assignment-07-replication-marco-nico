@@ -14,8 +14,9 @@ Their method intends to make text entry for online chats and general console usa
 
 To test out whether their method actually achieves these goals, the authors conducted a user study with 14 participants who had varying experience using computers but no regular use of game controllers. The trial consisted of a subject reproducing a displayed phrase using four different onscreen keyboards. The keyboards featured 2 different layouts (alphabetical and standard QWERTY) and two types of controls (single and dual sticks).
 
-The best results amongst all four, with a Words-per-minute rate of 7.08, was achieved by with dual-stick QWERTY version. For both layouts, the dual-stick versions scored a higher typing speed than the single-stick input, demonstrating the superiority of the authors' method over the standard.
+The best results amongst all four, with a Words-per-minute rate of 7.08 [1], was achieved by with dual-stick QWERTY version. For both layouts, the dual-stick versions scored a higher typing speed than the single-stick input [1], demonstrating the superiority of the authors' method over the standard.
 
+Publication: https://dl.acm.org/doi/10.1145/1124772.1124844 [1]
 
 ## Implementation
 
@@ -39,11 +40,11 @@ Our input handler uses pynput to handle three different types of events, those b
 The Joystick movement is used to navigate the selection box to a preferred character. Additionally users can delete the last character(backspace) by pointing both sticks to the left.
 Pointing both sticks upwards selects the 'special' keyboard overlay, providing more special characters like brackets and symbols. 
 
-Button presses are used to manipulate the overlay. Pressing "X" allows a user to toggle the overlay, while pressing "B" closes it (program stop). Pushing in either joystick also counts as button press, changing the input to capital letters.
+Button presses are used to manipulate the overlay. Pressing "X" allows a user to toggle the overlay, while pressing "B" closes it (program stop). Pushing in either joystick changes the keyboard to capital letters.
 
 The trigger buttons are used to enter selected characters on the corresponding side. Additionally, pressing both trigger buttons simultaneously enters a space.
 
-### Operating Systems
+### OS Compatibility
 
 We recommend using either Windows or Linux as operating systems, as they have been thoroughly tested during implementation.
 
@@ -64,6 +65,9 @@ We had no option to additionally test our implementation on MacOS yet, so it mig
 | **Toggle Overlay** | <kbd>X</kbd> | Toggle keyboard overlay. |
 | **Stop Program** | <kbd>B</kbd> | Stop the Program. |
 
+### Summary 
+Our final version fits well within the scope of this assignment. We are implementing an interaction technique that requires common hardware, utilizing libraries we covered during this course. The chosen concept offers a solution to a real-world problem that still remains a challenge in interaction techniques. Furthermore, in terms of lines of code, the implementation is comparable to previous assignments regarding both volume and complexity. And since the functionality of this concept has already been demonstrated in the official publication, the implementation is both justified and appropriate for this task, and we are very satisfied with our result.
+
 ## Other Papers
 
 In addition to the paper we chose to implement, we also considered other works. While they raised our interest, they were not quite fitting for the scope of this assignment or, in case of the "Bubble Cursor", not available anymore. 
@@ -76,9 +80,11 @@ Their concept features a unistroke gesture alphabet that is intended to be writt
 
 Each character is recognized not by exact shape, but the sequence of corners the stylus touches while tracing a gesture. Because only the visited corners determine a character, it is tolerant of shaky or imprecise movements.
 
-Their goals are to improve text entry accuracy, increase motion stability and provide a supportive design especially for people with motor impairments that struggle with common drawing gesture text entry methods.
+Their goals are to improve text entry accuracy, increase motion stability and provide a supportive design especially for people with motor impairments that struggle with common "drawing gesture" text entry methods.
 
 In the publication the authors mention specific hardware, in their case a touchpad with physical template and a stylus for drawing gestures. As we do not have access to similar devices, we could not implement this work in the same way and decided to select a different topic.
+
+Publication: https://dl.acm.org/doi/10.1145/964696.964703 
 
 ### The Bubble Cursor
 
@@ -87,3 +93,5 @@ The paper "The bubble cursor: enhancing target acquisition by dynamic resizing o
 Its goals are to improve target selection speed and reducing pointing errors, while still maintaining the same visual appearance as a regular cursor, offering support especially on dense interfaces.
 
 Considering the rather simple implementation and the fact that no additional peripherals are needed to realize this idea, it would be very fitting for this assignment. However, as mentioned, it was no longer available.
+
+Publication: https://dl.acm.org/doi/10.1145/1054972.1055012
