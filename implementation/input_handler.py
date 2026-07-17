@@ -1,5 +1,6 @@
 import time
 import pyglet
+from pynput.keyboard import Controller, Key
 import config
 
 # Extend the pyglet box by more parameters
@@ -27,8 +28,6 @@ class InputHandler:
 
         # Layout State
         self.layout_index = 0
-        self.layouts = [(config.LEFT_KEYS, config.RIGHT_KEYS),
-                        (config.LEFT_KEYS_SPECIAL, config.RIGHT_KEYS_SPECIAL)]
 
         self.selection_square_left = SelectionSquare(config.SELECTION_COLOR, self.view.box_size, is_left=True)
         self.selection_square_right = SelectionSquare(config.SELECTION_COLOR, self.view.box_size, is_left=False)
@@ -36,6 +35,14 @@ class InputHandler:
         # Set the inital stick positions
         self.set_selection_to_index(1,2,self.selection_square_left)
         self.set_selection_to_index(1,2,self.selection_square_right)
+
+        # Trigger states
+        self.lefttrigger_pressed = False
+        self.righttrigger_pressed = False
+        self.trigger_window_active = False
+
+        # Pynput
+        self.keyboard = Controller()
 
         # Controller setup
         self.controller_manager = pyglet.input.ControllerManager()
@@ -66,9 +73,9 @@ class InputHandler:
                 label.text = label.text.upper() if self.is_uppercase else label.text.lower()
 
     def toggle_layout(self):
-        self.layout_index = (self.layout_index + 1) % len(self.layouts)
+        self.layout_index = (self.layout_index + 1) % len(config.LAYOUTS)
         flat_layout = [
-            char for side in self.layouts[self.layout_index] for row in side for char in row
+            char for side in config.LAYOUTS[self.layout_index] for row in side for char in row
         ]
         for idx, label in enumerate(self.view.keyboard_labels):
             label.text = flat_layout[idx]
@@ -112,7 +119,7 @@ class InputHandler:
     def check_gestures(self):
         if self.selection_square_left.active or self.selection_square_right.active:
             return
-        # TODO Implement the requiered Gestures
+            
         perf_gesture = False
         left_up = self.selection_square_left.vector.y < -config.GESTURE_THRESHOLD
         right_up = self.selection_square_right.vector.y < -config.GESTURE_THRESHOLD
@@ -123,7 +130,8 @@ class InputHandler:
             self.toggle_layout()
             perf_gesture = True
         elif left_left and right_left:
-            print("TODO both left gesture: Backspace")
+            self.keyboard.press(Key.backspace)
+            self.keyboard.release(Key.backspace)
             perf_gesture = True
 
         if perf_gesture:
@@ -132,45 +140,88 @@ class InputHandler:
 
     # A methode to check if a gesture is even possible to reduce delay
     def is_gesture_possible(self, l_vec, r_vec):
-        # TODO Implement the requiered Gestures possibilities to reduce latency
         left_up = l_vec.y < -config.DEADZONE
         right_up = r_vec.y < -config.DEADZONE
         left_left = l_vec.x < -config.DEADZONE
         right_left = r_vec.x < -config.DEADZONE
         return (left_up and right_up) or (left_left and right_left)
 
+    def dispatch_single_trigger_input(self, dt, starting_trigger):
+        self.trigger_window_active = False
+
+        # Get the side
+        square = self.selection_square_left if starting_trigger == "lefttrigger" else self.selection_square_right
+        side = 0 if starting_trigger == "lefttrigger" else 1
+
+        # Get the key
+        row_idx = square.row_idx
+        key_idx = square.key_idx
+        key = config.LAYOUTS[self.layout_index][side][row_idx][key_idx]
+
+        # If the key is a special key we need to map it
+        if key in config.SPECIAL_KEYS_MAPPING:
+            mapped_key = config.SPECIAL_KEYS_MAPPING[key]
+            self.keyboard.press(mapped_key)
+            self.keyboard.release(mapped_key)
+        else:
+            # Respect uppercase
+            if self.is_uppercase and len(key) == 1 and key.isalpha():
+                key = key.upper()
+
+            # Type the key
+            self.keyboard.type(key)
+
     def register_events(self, controller_device):
         @controller_device.event
         def on_button_press(device, button):
+            # Hides and unhides the window if x is pressed
             if button =='x':
                 self.window.toggle()
 
+            # Don't accept other button input if the window is hidden
             if not self.window.visible:
                 return
 
-            # TODO Add missing buttons
-
-            if button == 'a':
+            # All regular button inputs
+            if button == 'b':
                 pyglet.app.exit()
-            elif button in ('leftstick', 'rightstick', 'b'):
+            elif button == 'leftshoulder':
+                self.keyboard.press(Key.left)
+                self.keyboard.release(Key.left)
+            elif button == 'rightshoulder':
+                self.keyboard.press(Key.right)
+                self.keyboard.release(Key.right)
+            elif button in ('leftstick', 'rightstick'):
                 self.toggle_case()
-            #print(button)
 
         @controller_device.event
         def on_trigger_motion(device, trigger_name, value):
             if not self.window.visible:
                 return
 
-            # TODO Implement the trigger presses and simultanious press
+            if value > config.TRIGGER_THRESHOLD:
 
-            threshold = 0.5
-            if trigger_name == "lefttrigger":
-                if value > threshold:
-                    pass
+                trigger_pressed = getattr(self, trigger_name + '_pressed')
 
-            elif trigger_name == "righttrigger":
-                if value > threshold:
-                    pass
+                if not trigger_pressed:
+                    setattr(self, trigger_name + '_pressed', True)
+
+                    # Get other trigger value
+                    other_name = "righttrigger" if trigger_name == "lefttrigger" else "lefttrigger"
+                    other_trigger_pressed = getattr(self, other_name + '_pressed')
+
+                    if other_trigger_pressed and self.trigger_window_active:
+                        pyglet.clock.unschedule(self.dispatch_single_trigger_input)
+                        self.trigger_window_active = False
+                        # If both triggers get pressed space is pressed
+                        self.keyboard.press(Key.space)
+                        self.keyboard.release(Key.space)
+                    elif not self.trigger_window_active:
+                        # If only one trigger gets pressed delay the input to wait if maybe the second one gets pressed too
+                        self.trigger_window_active = True
+                        pyglet.clock.schedule_once(self.dispatch_single_trigger_input, config.TRIGGER_WINDOW, trigger_name)
+            else:
+                setattr(self, trigger_name + '_pressed', False)
 
         @controller_device.event
         def on_stick_motion(device, name, vec):
@@ -204,7 +255,6 @@ class InputHandler:
             self.active_controller = None
 
             # When disconnecting a controller try to get another one
-            others = self.controller_manager.get_controllers()
+            other_controllers = self.controller_manager.get_controllers()
             if other_controllers:
                 self.on_controller_connect(others[0])
-

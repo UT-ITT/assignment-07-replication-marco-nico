@@ -26,6 +26,7 @@ DELAY = 0.2 # Cooldown after a possible gesture got registered
 BLOCK_DURATION = 0.25 # Cooldown after a Input for continues movement
 
 TRIGGER_WINDOW = 0.08 # Window to detect if both triggers got pushed
+TRIGGER_THRESHOLD = 0.5
 
 # Standard layouts
 LEFT_KEYS = [
@@ -41,15 +42,29 @@ RIGHT_KEYS = [
 ]
 
 # Special character layouts
-# TODO Add special characters and replace the dummy characters
 LEFT_KEYS_SPECIAL = [
-    ["-", "+", ":", ",", ".", "*"],
-    ["tab", "a", "s", "d", "f", "g"],
-    ["ctrl", "z", "x", "c", "v", "b"]
+    ["1", "2", "3", "4", "5", "6"],
+    ["!", "\"", "§", "%", "&", "("],
+    ["{", "}", "+", "-", "~", "#"]
 ]
 
 RIGHT_KEYS_SPECIAL = [
-    ["´", "?", "(", ")", "{", "}"],
-    ["-", "j", "k", "l", ";", "-"],
-    ["-", "m", ",", ".", "/", "-"]
+    ["7", "8", "9", "0", "ß", "´"],
+    [")", "[", "]", "=", "?", "¸"],
+    ["’", "_", ";", ":", "<", ">"]
 ]
+
+LAYOUTS = [(LEFT_KEYS, RIGHT_KEYS),
+           (LEFT_KEYS_SPECIAL, RIGHT_KEYS_SPECIAL)]
+
+# Mapping for special keys
+from pynput.keyboard import Key
+SPECIAL_KEYS_MAPPING = {
+    "esc": Key.esc,
+    "tab": Key.tab,
+    "ctrl": Key.ctrl,
+    "alt": Key.alt,
+    "space": Key.space,
+    "backspace": Key.backspace,
+    "enter": Key.enter
+}
