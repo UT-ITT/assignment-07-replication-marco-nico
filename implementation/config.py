@@ -65,6 +65,5 @@ SPECIAL_KEYS_MAPPING = {
     "ctrl": Key.ctrl,
     "alt": Key.alt,
     "space": Key.space,
-    "backspace": Key.backspace,
-    "enter": Key.enter
+    "backspace": Key.backspace
 }

@@ -193,6 +193,8 @@ class InputHandler:
                 self.keyboard.release(Key.right)
             elif button in ('leftstick', 'rightstick'):
                 self.toggle_case()
+            elif button == 'y':
+                self.keyboard.press(Key.enter)
 
         @controller_device.event
         def on_trigger_motion(device, trigger_name, value):

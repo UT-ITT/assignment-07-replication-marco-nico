@@ -110,11 +110,13 @@ class KeyboardView:
 
     def create_info_labels(self):
         labels_info = [
-            ("space: both triggers", 20, -40),
-            ("shift: press either stick down", 20, -80),
-            ("backspace: <-<-", 380, -40),
-            ("enter: Y", 380, -80),
-            ("exit: B or alt + q", 600, -40)
+            ("space: LT + RT", 20, -40),
+            ("shift: L3 or R3", 20, -80),
+            ("backspace: ← + ←", 380, -40),
+            ("special characters: ↑ + ↑", 380, -80),
+            ("enter: Y", 650, -80),
+            ("exit: B / ALT + Q", 650, -40)
+            
         ]
 
         for text, offset_x, offset_y in labels_info:
