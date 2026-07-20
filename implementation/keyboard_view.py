@@ -112,10 +112,11 @@ class KeyboardView:
         labels_info = [
             ("space: LT + RT", 20, -40),
             ("shift: L3 or R3", 20, -80),
-            ("backspace: ← + ←", 380, -40),
-            ("special characters: ↑ + ↑", 380, -80),
-            ("enter: Y", 650, -80),
-            ("exit: B / ALT + Q", 650, -40)
+            ("backspace: ← + ←", 320, -40),
+            ("special characters: ↑ + ↑", 320, -80),
+            ("enter: Y", 620, -80),
+            ("toggle overlay: X", 620, -40),
+            ("exit: B / ALT + Q", 850, -40)
             
         ]
 
