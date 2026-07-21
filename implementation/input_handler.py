@@ -195,6 +195,7 @@ class InputHandler:
                 self.toggle_case()
             elif button == 'y':
                 self.keyboard.press(Key.enter)
+                self.keyboard.release(Key.enter)
 
         @controller_device.event
         def on_trigger_motion(device, trigger_name, value):
