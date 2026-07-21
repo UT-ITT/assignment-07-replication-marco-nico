@@ -53,6 +53,7 @@ class KeyboardView:
                                 anchor_x='center', anchor_y='center',
                                 color=config.FONT_COLOR,
                                 batch=self.text_layer)
+        label.base_text = text
         key_bg = pyglet.shapes.Rectangle(x=(x - self.box_half_size),
                                 y=(y - self.box_half_size),
                                 width=self.box_size,

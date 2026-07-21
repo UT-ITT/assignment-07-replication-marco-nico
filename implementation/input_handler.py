@@ -69,16 +69,19 @@ class InputHandler:
     def toggle_case(self):
         self.is_uppercase = not self.is_uppercase
         for label in self.view.keyboard_labels:
-            if len(label.text) == 1 and label.text.isalpha():
-                label.text = label.text.upper() if self.is_uppercase else label.text.lower()
+            base_text = getattr(label, 'base_text', label.text)
+            if len(base_text) == 1 and base_text.isalpha():
+                label.text = base_text.upper() if self.is_uppercase else base_text.lower()
 
     def toggle_layout(self):
+        self.is_uppercase = False
         self.layout_index = (self.layout_index + 1) % len(config.LAYOUTS)
         flat_layout = [
             char for side in config.LAYOUTS[self.layout_index] for row in side for char in row
         ]
         for idx, label in enumerate(self.view.keyboard_labels):
             label.text = flat_layout[idx]
+            label.base_text = flat_layout[idx]
 
     def update_sticks(self, dt):
         self.process_stick_selection(self.selection_square_left, config.LEFT_KEYS)
@@ -119,7 +122,7 @@ class InputHandler:
     def check_gestures(self):
         if self.selection_square_left.active or self.selection_square_right.active:
             return
-            
+
         perf_gesture = False
         left_up = self.selection_square_left.vector.y < -config.GESTURE_THRESHOLD
         right_up = self.selection_square_right.vector.y < -config.GESTURE_THRESHOLD
