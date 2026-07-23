@@ -1,4 +1,4 @@
-# Marco & Nico (22/25P)
+# Marco & Nico (20.5/25P)
 
 ## 1. Paper Selection (3/4P)
 
@@ -35,3 +35,7 @@
   * yep (1/1P)
 * Live-Demo works and shows the interaction technique
   * yep (4/4P)
+
+
+## General
+* late bug fixes (-1.5P)
